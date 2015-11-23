@@ -1,0 +1,26 @@
+select 
+a.variation as variation,
+count(a.user) as orders
+from ( 
+select 
+fullvisitorid as user, 
+visitid as session, 
+hits.eventInfo.eventLabel as variation 
+from (table_date_range([58090804.ga_sessions_], date_add(current_date(), -30, 'day'), date_add(current_date(), -1, 'day'))), 
+(table_date_range([58090804.ga_sessions_intraday_], date_add(current_date(), -2, 'day'), date_add(current_date(), 0, 'day'))) 
+where hits.eventInfo.eventCategory = 'metail' 
+and regexp_match(hits.eventInfo.eventLabel, 'in|out') 
+group by user, session, variation 
+) a 
+join each ( 
+select 
+fullvisitorid user, 
+visitid session, 
+hits.transaction.transactionRevenue rvn 
+from (table_date_range([58090804.ga_sessions_], date_add(current_date(), -30, 'day'), date_add(current_date(), -1, 'day'))), 
+(table_date_range([58090804.ga_sessions_intraday_], date_add(current_date(), -2, 'day'), date_add(current_date(), 0, 'day'))) 
+where hits.transaction.transactionRevenue is not null 
+group by user, session, rvn) b 
+on a.user = b.user and a.session = b.session 
+group by variation
+
