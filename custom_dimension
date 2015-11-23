@@ -1,0 +1,3 @@
+SELECT customDimensions.index,customDimensions.value FROM [58090804.ga_sessions_20151021] 
+WHERE customDimensions.index is not null
+LIMIT 1000
