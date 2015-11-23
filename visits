@@ -1,0 +1,11 @@
+select variation, count(visitor) as visits from (
+SELECT
+fullvisitorid as visitor,
+hits.eventInfo.eventLabel as variation
+from (table_date_range([58090804.ga_sessions_], date_add(current_date(), -30, 'day'), date_add(current_date(), -1, 'day'))),
+(table_date_range([58090804.ga_sessions_intraday_], date_add(current_date(), -2, 'day'), date_add(current_date(), 0, 'day')))
+where regexp_match(hits.eventInfo.eventLabel, 'in|out')
+GROUP BY visitor, variation
+)
+group by variation
+
