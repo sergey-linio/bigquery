@@ -2,6 +2,7 @@ SELECT customDimensions.index,customDimensions.value FROM [58090804.ga_sessions_
 WHERE customDimensions.index is not null
 LIMIT 1000
 
+#for conversion
 SELECT
   group,
   orders,
@@ -20,6 +21,32 @@ FROM (
   SELECT
     "control" AS group,
     SUM(totals.transactions) AS orders,
+    COUNT(visitId) AS sessions
+  FROM
+    [58090804.ga_sessions_20151021]
+  WHERE
+    customDimensions.index == 7
+    AND customDimensions.value == "Optimizely_MX_Hide_McAfee (3684394557): Original")
+    
+#for revenue    
+  SELECT
+  group,
+  round(revenue / 1000000, 2) as revenue,
+  sessions
+FROM (
+  SELECT
+    "test" AS group,
+    SUM(totals.transactionRevenue) AS revenue,
+    COUNT(visitId) AS sessions
+  FROM
+    [58090804.ga_sessions_20151021]
+  WHERE
+    customDimensions.index == 7
+    AND customDimensions.value == "Optimizely_MX_Hide_McAfee (3684394557): Hide_McAfee_Badge"),
+  (
+  SELECT
+    "control" AS group,
+    SUM(totals.transactionRevenue) AS revenue,
     COUNT(visitId) AS sessions
   FROM
     [58090804.ga_sessions_20151021]
