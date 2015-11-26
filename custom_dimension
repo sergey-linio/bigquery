@@ -53,3 +53,27 @@ FROM (
   WHERE
     customDimensions.index == 7
     AND customDimensions.value == "Optimizely_MX_Hide_McAfee (3684394557): Original")
+    
+    
+  #for visitors
+SELECT
+  group,
+  visitors
+FROM (
+  SELECT
+    "test" AS group,
+    COUNT(fullVisitorId) AS visitors
+  FROM
+    [58090804.ga_sessions_20151021]
+  WHERE
+    customDimensions.index == 7
+    AND customDimensions.value == "Optimizely_MX_Hide_McAfee (3684394557): Hide_McAfee_Badge"),
+  (
+  SELECT
+    "control" AS group,
+    COUNT(fullVisitorId) AS visitors
+  FROM
+    [58090804.ga_sessions_20151021]
+  WHERE
+    customDimensions.index == 7
+    AND customDimensions.value == "Optimizely_MX_Hide_McAfee (3684394557): Original")
